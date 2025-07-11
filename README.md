@@ -78,21 +78,27 @@ activation of the environment
 `conda activate qiime2-amplicon-2024.5` 
 
 importing the biom and creating a qiime 2 artifact - qza
-`qiime tools import \
+```bash
+qiime tools import \
   --input-path your_depository/216124_otu_table.biom \
   --type 'FeatureTable[Frequency]' \
   --input-format BIOMV210Format \
-  --output-path your_depository/216124_otu-feature-table.qza`
+  --output-path your_depository/216124_otu-feature-table.qza
+```
 
 Extracts the contents of my SortMeRNA OTU results
 
 Check what is in sortmerna_picked_otus.tgz
 
-`tar -xvzf your_depository/216124_sortmerna_picked_otus.tgz -C your_depository_test/`
+```bash
+tar -xvzf your_depository/216124_sortmerna_picked_otus.tgz -C your_depository_test/`
+```
 
 unzip seq.fasta.gz
 
-`gunzip -c your_depository/216111_seqs.fasta.gz > your_depository/216111_seqs.fasta`
+```bash
+gunzip -c your_depository/216111_seqs.fasta.gz > your_depository/216111_seqs.fasta
+```
 
 Generating a representative sequence Fasta file
 
@@ -104,29 +110,38 @@ seq.fasta has to match with seqs_otus
 
 This is a code using a Python package to create a rep_set.fna, which contains one representative sequence per OTU.
 
-`pip install biopython  `
+```bash
+pip install biopython  
+```
 
 biopython package (needed to read/write FASTA files using SeqIO)
 Now, create a script for Python
 
-`nano generate_rep_set.py`
+```bash
+nano generate_rep_set.py
 
-`insert into nano`
+insert into nano
 
-`from Bio import SeqIO`
+from Bio import SeqIO
+```
 
 File paths
 
-`seqs_fasta = "your_depository/216111_seqs.fasta"
+```bash
+seqs_fasta = "your_depository/216111_seqs.fasta"
 otus_txt = "your_depository/sortmerna_picked_otus/seqs_otus.txt"
-output_fasta = "your_depository/rep_set.fna"`
+output_fasta = "your_depository/rep_set.fna"
+```
 
 Load sequence records
 
-`seq_records = SeqIO.to_dict(SeqIO.parse(seqs_fasta, "fasta"))`
+```bash
+seq_records = SeqIO.to_dict(SeqIO.parse(seqs_fasta, "fasta"))
+```
 
 #Parse the OTU file and write the representative sequences
-`with open(otus_txt, "r") as otus_file, open(output_fasta, "w") as out_fasta:
+```bash
+with open(otus_txt, "r") as otus_file, open(output_fasta, "w") as out_fasta:
     for line in otus_file:
         columns = line.strip().split()
         otu_id = columns[0]  # OTU ID
@@ -138,80 +153,99 @@ Load sequence records
                 rep_seq.id = otu_id  # Rename header to OTU ID
                 rep_seq.description = ""  # Clear description
                 SeqIO.write(rep_seq, out_fasta, "fasta")
-                break`
+                break
+```
 
 Run the Python script
 
-`python3 generate_rep_set.py`
+```bash
+python3 generate_rep_set.py
+```
 
 converting rep_set.fna into an artifact so I can work with it in qiime
 
-`qiime tools import \
+```bash
+qiime tools import \
   --input-path your_depository/rep_set.fna \
   --output-path your_depository/otu-rep-seqs.qza \
-  --type 'FeatureData[Sequence]'`
+  --type 'FeatureData[Sequence]'
+```
 
 now assigning taxonomy using SILVA -> silva-138-99-nb-classifier.qza
 
-`qiime feature-classifier classify-sklearn \
+```bash
+qiime feature-classifier classify-sklearn \
   --i-classifier your_path/silva-138-99-nb-classifier.qza \    # representative sequences for each OTUs!
   --i-reads your_depository/otu-rep-seqs.qza \
-  --o-classification your_depository/otu-taxonomy.qza`
+  --o-classification your_depository/otu-taxonomy.qza
+```
 
 filtering
 
 filtering Mitochondria, Chloroplast, Samples with less than 5 reads (The reads depend on your choice and the data)
 
-`qiime taxa filter-table \
+```bash
+qiime taxa filter-table \
   --i-table your_depository/216124_otu-feature-table.qza \
   --i-taxonomy your_depository/otu-taxonomy.qza \
   --p-exclude mitochondria,chloroplast \
-  --o-filtered-table your_depository/otu-table-no-mitochondria-chloroplast.qza`
-  
+  --o-filtered-table your_depository/otu-table-no-mitochondria-chloroplast.qza
+```
+
 less than 5 reads
 
-`qiime feature-table filter-features \
+```bash
+qiime feature-table filter-features \
   --i-table your_depository/otu-table-no-mitochondria-chloroplast.qza \
   --p-min-frequency 5 \
-  --o-filtered-table your_depository/otu-table-filtered.qza`
+  --o-filtered-table your_depository/otu-table-filtered.qza
+```
 
  Visualisation of the taxonomy
  
-`qiime metadata tabulate \
+```bash
+qiime metadata tabulate \
   --m-input-file your_depository/otu-table-filtered.qza \
-  --o-visualization your_depository/otu-taxonomy.qzv`
+  --o-visualization your_depository/otu-taxonomy.qzv
+```
 
 summary
 
-`qiime feature-table summarize \
+```bash
+qiime feature-table summarize \
   --i-table your_depository/otu-table-filtered.qza \
-  --o-visualization your_depository/otu-table-summary.qzv`
+  --o-visualization your_depository/otu-table-summary.qzv
+```
 
 still checks after the filtering and converts to tsv, it is just for checking!
 less than 5 reads
 
-`qiime tools export \
+```bash
+qiime tools export \
   --input-path your_depository/otu-table-filtered.qza \
-  --output-path your_depository/otu-table-filtered-exported`
+  --output-path your_depository/otu-table-filtered-exported
 
-`biom convert \
+biom convert \
   -i your_depository_test/otu-table-filtered-exported/feature-table.biom \
   -o your_depository_test/otu-table-filtered.tsv \
- --to-tsv`
+ --to-tsv
+```
 
 
 Extract OTU table (from qza to Bioam)
-
-`qiime tools export \
+```bash
+qiime tools export \
   --input-path your_depository/otu-table-filtered.qza \
-  --output-path your_depository/exported_taxonomy`
+  --output-path your_depository/exported_taxonomy
+```
   
 Now I need to assign taxonomy
 
-`qiime tools export \
+```bash
+qiime tools export \
   --input-path your_depository/otu-taxonomy.qza \
-  --output-path your_depository/exported_taxonomy`
-
+  --output-path your_depository/exported_taxonomy
+```
 Adding taxonomy to each OTU in the biom table
 
 `biom add-metadata \
