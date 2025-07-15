@@ -140,7 +140,7 @@ Load sequence records
 seq_records = SeqIO.to_dict(SeqIO.parse(seqs_fasta, "fasta"))
 ```
 
-#Parse the OTU file and write the representative sequences
+Parse the OTU file and write the representative sequences
 ```bash
 with open(otus_txt, "r") as otus_file, open(output_fasta, "w") as out_fasta:
     for line in otus_file:
@@ -388,7 +388,6 @@ qiime diversity alpha-group-significance \
   --o-visualization your_depository/shannon-group-significance.qzv
 ```
 
-
 # Beta diversity
 
 Aligns OTU sequences, removes noisy alignment regions, builds a tree, and roots it — use it in QIIME to calculate phylogenetic diversity metrics (UniFrac)
@@ -441,8 +440,7 @@ your_depository/metadata.tsv) \
 > your_depository_test/metadata-matched.tsv
 ```
 
-
-needs to extract the real headers
+Needs to extract the real headers
 
 ```bash
 sed -n '2p' your_depository/otu-table-filtered.tsv | cut -f2- \
@@ -494,7 +492,7 @@ qiime diversity beta \
   --o-distance-matrix your_depository/braycurtis-distance.qza
 ```
 
-# braycurtis-distance
+# Braycurtis-distance
 
 ```bash
 qiime diversity pcoa \
@@ -502,7 +500,7 @@ qiime diversity pcoa \
   --o-pcoa your_depository_test/braycurtis-pcoa.qza
 ```
  
-# visualisation
+# Visualisation
 
 ```bash
 qiime emperor plot \
