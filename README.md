@@ -2,7 +2,7 @@
 This repository contains my first analysis workflow using Qiita (https://qiita.ucsd.edu/) and Qiime 2 (https://qiime2.org/).
 It processes and analyses 16s rRNA data from my raw reads for diversity analysis and taxonomy
 
-Notes 📊 : 
+Notes 🧙‍♂️ : 
 -Taxonomy was assigned using the SILVA 138 classifier
 -Alpha/beta diversity used filtered OTU tables
 -Sample metadata is stored in metadata.tsv
@@ -72,8 +72,9 @@ Steps in Pipeline 🔧
 7. **Beta diversity** (UniFrac, Bray-Curtis, pcoa)
 8. **Visualisations** (barplots, diversity plots, pcoa)
 
-
+```bash
 activation of the environment
+```
 
 `conda activate qiime2-amplicon-2024.5` 
 
@@ -248,45 +249,57 @@ qiime tools export \
 ```
 Adding taxonomy to each OTU in the biom table
 
-`biom add-metadata \
+```bash
+biom add-metadata \
   -i your_depository_test/exported_otu_genus_table/feature-table.biom \
   -o your_depository_test/feature-table-with-taxonomy.biom \
   --observation-metadata-fp your_depository_test/exported_taxonomy/taxonomy.tsv \
-  --sc-separated taxonomy`
+  --sc-separated taxonomy
+```
 
 The header must follow the rules
 
-`sed -i '1s/.*/#OTUID\ttaxonomy\tconfidence/' your_depository_test/exported_taxonomy/taxonomy.tsv`
+```bash
+sed -i '1s/.*/#OTUID\ttaxonomy\tconfidence/' your_depository_test/exported_taxonomy/taxonomy.tsv
+```
 
 Converting the Biom table into TSV
 
-`biom convert \
+```bash
+biom convert \
   -i your_depository_test/feature-table-with-taxonomy.biom \
   -o your_depository_test/feature-table-with-taxonomy.tsv \
   --to-tsv \
-  --header-key taxonomy`
+  --header-key taxonomy
+```
 
 Collapsing - Even though I’ve added taxonomy into the feature table file, it’s still better to let QIIME 2 handle the taxonomy-based grouping using Qiime taxa collapse, because it understands the taxonomic hierarchy and does the grouping properly; Genus-level insights are more meaningful than raw OTUs.
 
-`qiime taxa collapse \
+```bash
+qiime taxa collapse \
   --i-table your_depository_test/otu-table-filtered.qza \
   --i-taxonomy your_depository_test/otu-taxonomy.qza \
   --p-level 6 \
-  --o-collapsed-table your_depository_test/otu-genus-feature-table.qza`
+  --o-collapsed-table your_depository_test/otu-genus-feature-table.qza
+```
 
 Export to table
 
-`qiime tools export \
+```bash
+qiime tools export \
   --input-path your_depository_test/otu-genus-feature-table.qza \
-  --output-path your_depository_test/exported_otu_genus_table`
+  --output-path your_depository_test/exported_otu_genus_table
+```
   
 And to tsv
 
-`biom convert \
+```bash
+biom convert \
   -i your_depository_test/exported_otu_genus_table/feature-table.biom \
   -o your_depository_test/otu-genus-feature-table.tsv \
   --to-tsv \
-  --table-type="OTU table"`
+  --table-type="OTU table"
+```
 
 Blast and long formatting of the table is done in R Studio
 
@@ -294,159 +307,211 @@ Blast and long formatting of the table is done in R Studio
 
 Get rid of the prefix
 
-`sed -i 's/15931\.//g' your_depository_test/otu-table-filtered.tsv`
+```bash
+sed -i 's/15931\.//g' your_depository_test/otu-table-filtered.tsv
+```
 
 Now the qza needs to be fixed by the biom
 
-`biom convert \
+```bash
+biom convert \
   -i your_depository_test/otu-table-filtered.tsv \
   -o your_depository_test/otu-table-filtered.biom \
   --to-hdf5 \
-  --table-type="OTU table"`
+  --table-type="OTU table"
+```
   
 and back to qza
 
-`qiime tools import \
+```bash
+qiime tools import \
   --input-path your_depository_test/otu-table-filtered.biom \
   --type 'FeatureTable[Frequency]' \
-  --output-path your_depository/otu-table-filtered.qza`
+  --output-path your_depository/otu-table-filtered.qza
+```
 
-`qiime diversity alpha \
+```bash
+qiime diversity alpha \
   --i-table your_depository_test/otu-table-filtered.qza \
   --p-metric shannon \
-  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza`
+  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza
+```
 
 Visualisation
 
-`qiime metadata tabulate \
+```bash
+qiime metadata tabulate \
   --m-input-file your_depository_test/shannon_alpha_diversity.qza \
-  --o-visualization your_depository_test/shannon_alpha_diversity.qzv`
+  --o-visualization your_depository_test/shannon_alpha_diversity.qzv
+```
 
 Alpha diversity with metadata containing duration_exposure (or whatever you need)
 My IDs have a prefix from Qiita 
 It is easier to add a prefix to the metadata
 
-`awk -F'\t' 'BEGIN {OFS="\t"} NR==1 {$1=$1} NR>1 {$1="15931."$1} 1' \`
-`your_depository/metadata_withcombined.tsv \`
-`> your_depository/metadata_prefixed.tsv`
+Adding the prefix to metadata
 
-`qiime tools import \
+```bash
+awk -F'\t' 'BEGIN {OFS="\t"} NR==1 {$1=$1} NR>1 {$1="15931."$1} 1' \
+```
+Creating TSV
+
+```bash
+your_depository/metadata_withcombined.tsv \
+```
+
+```bash
+> your_depository/metadata_prefixed.tsv
+```
+
+BIOM to QZA
+
+```bash
+qiime tools import \
   --input-path your_depository_test/otu-table-filtred.biom \
   --type 'FeatureTable[Frequency]' \
-  --output-path your_depository_test/otu-table-filtered-fixed.qza`
+  --output-path your_depository_test/otu-table-filtered-fixed.qza
+```
 
-
-`qiime diversity alpha \
+```bash
+qiime diversity alpha \
   --i-table your_depository_test/otu-table-filtered.qza \
   --p-metric shannon \
-  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza`
+  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza
+```
+Visualisation
 
-`qiime diversity alpha-group-significance \
+```bash
+qiime diversity alpha-group-significance \
   --i-alpha-diversity your_depository/shannon_alpha_diversity.qza \
   --m-metadata-file your_depository/metadata_prefixed.tsv \
-  --o-visualization your_depository/shannon-group-significance.qzv`
+  --o-visualization your_depository/shannon-group-significance.qzv
+```
 
 
 # Beta diversity
 
 Aligns OTU sequences, removes noisy alignment regions, builds a tree, and roots it — use it in QIIME to calculate phylogenetic diversity metrics (UniFrac)
 
-`qiime phylogeny align-to-tree-mafft-fasttree \
+```bash
+qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences your_depository_test/otu-rep-seqs.qza \
   --o-alignment your_depository_test/aligned-rep-seqs.qza \
   --o-masked-alignment your_depository_test/masked-alignment.qza \
   --o-tree your_depository_test/unrooted-tree.qza \
-  --o-rooted-tree your_depository_test/rooted-tree.qza`
+  --o-rooted-tree your_depository_test/rooted-tree.qza
+```
 
- Unweighted Unifrac -> because I work with OTUs
+ Unweighted Unifrac -> I want presence and absence information
  
-`qiime diversity beta-phylogenetic \
+```bash
+qiime diversity beta-phylogenetic \
   --i-table your_depository/otu-table-filtered.qza \
   --i-phylogeny your_depository/rooted-tree.qza \
   --p-metric unweighted_unifrac \
-  --o-distance-matrix your_depository/unweighted_unifrac_distance_matrix.qza`
+  --o-distance-matrix your_depository/unweighted_unifrac_distance_matrix.qza
+```
 
 Measuring how different microbial communities are between samples
 
 Based on the presence or absence of taxa, and how evolutionarily distinct those taxa are
 
-`qiime diversity beta-phylogenetic \
+```bash
+qiime diversity beta-phylogenetic \
   --i-table your_depository_test/otu-table-filtered.qza \
   --i-phylogeny your_depository_test/rooted-tree.qza \
   --p-metric unweighted_unifrac \
-  --o-distance-matrix your_depository_test/unweighted_unifrac_distance_matrix.qza`
+  --o-distance-matrix your_depository_test/unweighted_unifrac_distance_matrix.qza
+```
 
-Extract sample IDs from OTU table
-`head -n 1 your_depository_test/otu-table-filtered.tsv | cut -f2- > your_depository_test/sample-ids.txt`
+Extract sample IDs from the OTU table
 
-Reformat the sample id
+```bash
+head -n 1 your_depository_test/otu-table-filtered.tsv | cut -f2- > your_depository_test/sample-ids.txt
+```
+
+Reformat the sample ID
 
 grep to filter another file to keep only lines that match those sample names
 
-  `(head -n 1 your_depository/metadata.tsv && \`
- `grep -F -w -f your_depository_test/sample-ids-fixed.txt \`
-` your_depository/metadata.tsv) \`
-` > your_depository_test/metadata-matched.tsv`
+```bash
+(head -n 1 your_depository/metadata.tsv && \
+grep -F -w -f your_depository_test/sample-ids-fixed.txt \
+your_depository/metadata.tsv) \
+> your_depository_test/metadata-matched.tsv
+```
 
 
 needs to extract the real headers
 
-`sed -n '2p' your_depository/otu-table-filtered.tsv | cut -f2- \
-| tr '\t' '\n' > your_depository_test/sample-ids-fixed.txt`
+```bash
+sed -n '2p' your_depository/otu-table-filtered.tsv | cut -f2- \
+| tr '\t' '\n' > your_depository_test/sample-ids-fixed.txt
+```
 
 and check it
 
-`cat your_depository_test/sample-ids-fixed.txt`
+```bash
+cat your_depository_test/sample-ids-fixed.txt
+```
 
 Now convert to biom
 
-`biom convert \
+```bash
+biom convert \
   -i your_depository_test/otu-table-filtered.tsv \
   -o your_depository_test/otu-table-fixed.biom \
   --table-type="OTU table" \
-  --to-hdf5`
+  --to-hdf5
+```
 
 and convert biom to qza so I can work with it in qiime
 
-`qiime tools import \
+```bash
+qiime tools import \
   --input-path your_depository_test/otu-table-fixed.biom \
   --type 'FeatureTable[Frequency]' \
   --input-format BIOMV210Format \
-  --output-path your_depository_test/otu-table-fixed.qza`
+  --output-path your_depository_test/otu-table-fixed.qza
+```
 
-#Visualisation
+# Visualisation
 
-`qiime taxa barplot \
+```bash
+qiime taxa barplot \
   --i-table your_depository/otu-table-fixed.qza \
   --i-taxonomy your_depository/otu-taxonomy.qza \
   --m-metadata-file your_depository/metadata.tsv \
-  --o-visualization your_depository/taxa-barplot.qzv`
+  --o-visualization your_depository/taxa-barplot.qzv
+```
 
-#PCA
+# PCA
 
-`qiime diversity beta \
+```bash
+qiime diversity beta \
   --i-table your_depository/otu-table-fixed.qza \
   --p-metric braycurtis \
-  --o-distance-matrix your_depository/braycurtis-distance.qza`
+  --o-distance-matrix your_depository/braycurtis-distance.qza
+```
 
 # braycurtis-distance
 
-`qiime diversity pcoa \
+```bash
+qiime diversity pcoa \
   --i-distance-matrix your_depository_test/braycurtis-distance.qza \
-  --o-pcoa your_depository_test/braycurtis-pcoa.qza`
-
-# Bray Curtis-distance
-
-`qiime diversity pcoa \
-  --i-distance-matrix your_depository_test/braycurtis-distance.qza \
-  --o-pcoa your_depository_test/braycurtis-pcoa.qza`
-  
+  --o-pcoa your_depository_test/braycurtis-pcoa.qza
+```
+ 
 # visualisation
 
-`qiime emperor plot \
+```bash
+qiime emperor plot \
   --i-pcoa your_depository/braycurtis-pcoa.qza \
   --m-metadata-file your_depository/metadata.tsv \
-  --o-visualization your_depository/braycurtis-pcoa.qzv`
+  --o-visualization your_depository/braycurtis-pcoa.qzv
+```
+
+💻😃🌼
 
 
 Metadata
@@ -455,3 +520,4 @@ sample_name	description	sample_type	condition	sex	day	feeding	exposure	condition
 15931.GD7A2ChlControl7	mussel	experimental	Chl Control	m	day7	chlorella	no	Chl Control 7
 15931.GD7A3ChlControl7	mussel	experimental	Chl Control	m	day7	chlorella	no	Chl Control 7
 
+٩(^ᗜ^)و Happy coding
