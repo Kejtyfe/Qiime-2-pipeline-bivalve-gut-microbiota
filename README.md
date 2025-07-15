@@ -415,14 +415,6 @@ Measuring how different microbial communities are between samples
 
 Based on the presence or absence of taxa, and how evolutionarily distinct those taxa are
 
-```bash
-qiime diversity beta-phylogenetic \
-  --i-table your_depository_test/otu-table-filtered.qza \
-  --i-phylogeny your_depository_test/rooted-tree.qza \
-  --p-metric unweighted_unifrac \
-  --o-distance-matrix your_depository_test/unweighted_unifrac_distance_matrix.qza
-```
-
 Extract sample IDs from the OTU table
 
 ```bash
