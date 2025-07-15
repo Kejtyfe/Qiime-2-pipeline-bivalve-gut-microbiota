@@ -181,7 +181,7 @@ qiime feature-classifier classify-sklearn \
   --o-classification your_depository/otu-taxonomy.qza # will be used in R studio analysis
 ```
 
-filtering
+# Filtering
 
 filtering Mitochondria, Chloroplast, Samples with less than 5 reads (The reads depend on your choice and the data)
 
