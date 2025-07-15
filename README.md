@@ -178,7 +178,7 @@ now assigning taxonomy using SILVA -> silva-138-99-nb-classifier.qza
 qiime feature-classifier classify-sklearn \
   --i-classifier your_path/silva-138-99-nb-classifier.qza \    # representative sequences for each OTUs!
   --i-reads your_depository/otu-rep-seqs.qza \
-  --o-classification your_depository/otu-taxonomy.qza
+  --o-classification your_depository/otu-taxonomy.qza # will be used in R studio analysis
 ```
 
 filtering
@@ -327,14 +327,14 @@ and back to qza
 qiime tools import \
   --input-path your_depository_test/otu-table-filtered.biom \
   --type 'FeatureTable[Frequency]' \
-  --output-path your_depository/otu-table-filtered.qza
+  --output-path your_depository/otu-table-filtered.qza # otu-table-filtered.qza can be used in R Studio visualisation and analysis
 ```
 
 ```bash
 qiime diversity alpha \
   --i-table your_depository_test/otu-table-filtered.qza \
   --p-metric shannon \
-  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza
+  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza  # R studio visualisation 
 ```
 
 Visualisation
@@ -361,7 +361,7 @@ your_depository/metadata_withcombined.tsv \
 ```
 
 ```bash
-> your_depository/metadata_prefixed.tsv
+> your_depository/metadata_prefixed.tsv # We will use this metadata in the R studio as well
 ```
 
 BIOM to QZA
