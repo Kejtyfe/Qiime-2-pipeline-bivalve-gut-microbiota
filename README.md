@@ -178,7 +178,7 @@ now assigning taxonomy using SILVA -> silva-138-99-nb-classifier.qza
 qiime feature-classifier classify-sklearn \
   --i-classifier your_path/silva-138-99-nb-classifier.qza \    # representative sequences for each OTUs!
   --i-reads your_depository/otu-rep-seqs.qza \
-  --o-classification your_depository/otu-taxonomy.qza # will be used in R studio analysis
+  --o-classification your_depository/otu-taxonomy.qza # Output used in RStudio analysis
 ```
 
 # Filtering
@@ -234,6 +234,7 @@ biom convert \
 
 
 Extract OTU table (from qza to Bioam)
+
 ```bash
 qiime tools export \
   --input-path your_depository/otu-table-filtered.qza \
@@ -327,14 +328,14 @@ and back to qza
 qiime tools import \
   --input-path your_depository_test/otu-table-filtered.biom \
   --type 'FeatureTable[Frequency]' \
-  --output-path your_depository/otu-table-filtered.qza # otu-table-filtered.qza can be used in R Studio visualisation and analysis
+  --output-path your_depository/otu-table-filtered.qza # Output used in RStudio analysis
 ```
 
 ```bash
 qiime diversity alpha \
   --i-table your_depository_test/otu-table-filtered.qza \
   --p-metric shannon \
-  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza  # R studio visualisation 
+  --o-alpha-diversity your_depository_test/shannon_alpha_diversity.qza  # Output used in RStudio analysis
 ```
 
 Visualisation
@@ -481,7 +482,7 @@ qiime taxa barplot \
 qiime diversity beta \
   --i-table your_depository/otu-table-fixed.qza \
   --p-metric braycurtis \
-  --o-distance-matrix your_depository/braycurtis-distance.qza
+  --o-distance-matrix your_depository/braycurtis-distance.qza 
 ```
 
 # Braycurtis-distance
@@ -489,7 +490,7 @@ qiime diversity beta \
 ```bash
 qiime diversity pcoa \
   --i-distance-matrix your_depository_test/braycurtis-distance.qza \
-  --o-pcoa your_depository_test/braycurtis-pcoa.qza
+  --o-pcoa your_depository_test/braycurtis-pcoa.qza # Output used in RStudio analysis
 ```
  
 # Visualisation
