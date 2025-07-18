@@ -281,7 +281,7 @@ qiime taxa collapse \
   --i-table your_depository_test/otu-table-filtered.qza \
   --i-taxonomy your_depository_test/otu-taxonomy.qza \
   --p-level 6 \
-  --o-collapsed-table your_depository_test/otu-genus-feature-table.qza
+  --o-collapsed-table your_depository_test/otu-genus-feature-table.qza # Output used in RStudio analysis
 ```
 
 Export to table
