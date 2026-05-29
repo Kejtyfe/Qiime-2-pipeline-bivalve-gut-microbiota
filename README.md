@@ -92,7 +92,7 @@ Extracts the contents of my SortMeRNA OTU results
 Check what is in sortmerna_picked_otus.tgz
 
 ```bash
-tar -xvzf your_depository/216124_sortmerna_picked_otus.tgz -C your_depository_test/`
+tar -xvzf your_depository/216124_sortmerna_picked_otus.tgz -C your_depository_test/
 ```
 
 unzip seq.fasta.gz
