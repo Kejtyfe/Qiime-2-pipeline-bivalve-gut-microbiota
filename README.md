@@ -72,12 +72,12 @@ Steps in Pipeline 🔧
 7. **Beta diversity** (UniFrac, Bray-Curtis, pcoa)
 8. **Visualisations** (barplots, diversity plots, pcoa)
 
-```bash
+
 activation of the environment
+
+```bash
+conda activate qiime2-amplicon-2024.5 
 ```
-
-`conda activate qiime2-amplicon-2024.5` 
-
 importing the biom and creating a qiime 2 artifact - qza
 ```bash
 qiime tools import \
