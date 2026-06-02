@@ -30,19 +30,6 @@ I work with Ubuntu (Linux Subsystem)
 └──8. Output Files
 
 
-activation of the environment
-
-```bash
-conda activate qiime2-amplicon-2024.5 
-```
-importing the biom and creating a qiime 2 artifact - qza
-```bash
-qiime tools import \
-  --input-path your_depository/216124_otu_table.biom \
-  --type 'FeatureTable[Frequency]' \
-  --input-format BIOMV210Format \
-  --output-path your_depository/216124_otu-feature-table.qza
-```
 
 Extracts the contents of my SortMeRNA OTU results
 
