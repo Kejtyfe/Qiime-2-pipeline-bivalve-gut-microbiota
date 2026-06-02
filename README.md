@@ -1,76 +1,34 @@
-# Qiita output and Qiime 2 pipeline for Bivalve gut microbiota
-This repository contains my first analysis workflow using Qiita (https://qiita.ucsd.edu/) and Qiime 2 (https://qiime2.org/).
+# Qiime 2 pipeline: gut microbiota of bivalves
+This repository contains my first analysis workflow using Qiime 2 (https://qiime2.org/).
 It processes and analyses 16s rRNA data from my raw reads for diversity analysis and taxonomy
 
 Notes 🧙‍♂️ : 
--Taxonomy was assigned using the SILVA 138 classifier
+-Sequence quality control was performed with Dada 2 (equivalent to de-novo clustering OTUs)
+-Vsearch was used to obtain OTUs
+-Taxonomy was assigned using the SILVA 138-99 classifier
 -Alpha/beta diversity used filtered OTU tables
 -Sample metadata is stored in metadata.tsv
 
 ## 📁 Folder structure
 
-Qiita workflow summary
+Bash summary
+I work with Ubuntu (Linux Subsystem)
+├──1. Creating a new file
 
-├──1. Raw Data Upload
+├──2. Metadata
 
-├──2.Split libraries
+├──3. Raw Data Upload
 
-├──3. Demultiplexed
+├──4.Split libraries
 
-├──4.Pick closed-reference OTUs (QIIMEq2 1.9.1)
+├──5. Demultiplexed
 
-├──5.OTU Table Summary (Feature Table)
+├──6.Pick closed-reference OTUs (QIIMEq2 1.9.1)
 
-└──6. Output Files
+├──7.OTU Table Summary (Feature Table)
 
-**1. Raw Data Upload**
-	- Platform: Illumina
-**2. Split libraries**
-	- Tool: Split libraries FASTQ (QIIME 1.9.1) - To demultiplex raw FASTQ reads and apply initial quality filtering.
-	- Key settings:
-	Removed reads with ambiguous bases (Ns)
-	Kept reads with at least 75% of the original length
-	Allowed up to 3 consecutive low-quality bases
-	Quality threshold: Q3
-	Barcode type: Not-barcoded (reads were already separated per sample)
-**3. Demultiplexed**
-    - Total: 1455219  
-    - Max: 301  
-    - Mean: 301  
-    - Standard deviation: 301
-**4. Pick closed-reference OTUs (QIIMEq2 1.9.1)**
-    - Classifier: silva_119_taxonomy_97_7
-    - Similarity threshold: 97% (only sequences matching reference OTUs at ≥97% similarity were retained)
-    - Other settings:
-    sortmerna_e_value: 1
-    sortmerna_max_pos: 10,000
-    sortmerna_coverage: 0.97
-    Threads used: 5
-**5.OTU Table Summary (Feature Table)**
-**6. Output Files**
-    - Feature table (BIOM)
-    - Feature table (QZA)
-    - Sortmerna picked Otus
-    - support files
-    - seqs.fasta.gz
+└──8. Output Files
 
-Qiime 2 pipeline\
-
-├── scripts/ # Ubuntu WSL
-
-├── metadata.tsv # Sample metadata
-
-└── README.md
-
-Steps in Pipeline 🔧
-1. **Import raw data**
-2. **OTU picking**
-3. **Filtering chloroplast/mitochondria**
-4. **Assign taxonomy (SILVA)**
-5. **Collapse feature table**
-6. **Alpha diversity** (Shannon)
-7. **Beta diversity** (UniFrac, Bray-Curtis, pcoa)
-8. **Visualisations** (barplots, diversity plots, pcoa)
 
 
 activation of the environment
