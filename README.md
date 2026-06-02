@@ -30,7 +30,6 @@ I work with Ubuntu (Linux Subsystem)
 └──8. Output Files
 
 
-
 activation of the environment
 
 ```bash
