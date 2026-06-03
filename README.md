@@ -13,11 +13,12 @@ Notes 🧙‍♂️ :
 
 Bash summary
 I work with Ubuntu (Linux Subsystem)
-├──1. Creating a new file
+
+├──1. 🛠️ Creating a new file
 
 ├──2. Metadata
 
-├──3. Raw Data Upload
+├──3. 🛠️ Manifest
 
 ├──4.Split libraries
 
