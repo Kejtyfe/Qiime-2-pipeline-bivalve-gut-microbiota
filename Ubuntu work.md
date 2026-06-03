@@ -39,4 +39,16 @@ sample2      sample2_R1.fastq.gz       sample2_R2.fastq.gz
 ```bash
 fastq_dir=/mnt/c/Users/Kejty/bivalve_FASTQ
 ```
- 
+ Now creating the manifest. 🛠️
+So first of all we need the headers
+```text
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+```
+**printf** - print formatted text, will create the first line of the manifest file.
+```bash
+ printf "sample-id\tforward-absolute-filepath\treverse-absolute-filepath\n" > manifest.tsv
+```
+* "t" - in front of each head means a Tab (separation by Tab- Tab separetes values)
+* "n" - means a new line
+* ">" - overwrite a file if it already exists
+
